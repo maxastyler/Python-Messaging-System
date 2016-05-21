@@ -19,7 +19,7 @@ class Circle:
         self.colour=colour
 
     def render(self, screen):
-        pygame.draw.circle(screen, self.colour, (int(np.round(self.x)), int(np.round(self.y))), int(np.round(self.radius)))
+        pygame.draw.circle(screen, self.colour, (int(np.round(self.x)), int(np.round(SCREEN_SIZE[1]-self.y))), int(np.round(self.radius)))
 
 def pygame_coords(x, y):
     return x, SCREEN_SIZE[1]-y
@@ -31,6 +31,7 @@ def add_circ(event):
 
 def main():
     window = pygame.display.set_mode(SCREEN_SIZE)
+    pygame.display.set_caption("Messaging System Test")
 
     global messenger
     messenger=Messenger()
@@ -48,7 +49,6 @@ def main():
     while running:
 
         dt=clock.tick(FPS)
-        print(dt)
         messenger.update(dt)
         for event in pygame.event.get():
             if event.type==pygame.QUIT:
