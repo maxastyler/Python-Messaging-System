@@ -60,6 +60,8 @@ def main():
         keys=pygame.key.get_pressed()
         if keys[pygame.K_LSHIFT]:
             vel=0.3
+        elif keys[pygame.K_LCTRL]:
+            vel=0.05
         else:
             vel=0.1
         if keys[pygame.K_ESCAPE]:
