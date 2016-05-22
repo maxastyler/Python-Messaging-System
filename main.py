@@ -7,7 +7,7 @@ import numpy as np
 import random
 
 SCREEN_SIZE=(500, 500)
-circ_max=np.sqrt(SCREEN_SIZE[0]**2+SCREEN_SIZE[1]**2)
+circ_max=np.sqrt(SCREEN_SIZE[0]**2+SCREEN_SIZE[1]**2)*2.
 FPS=60.
 circs=[]
 
@@ -24,10 +24,12 @@ class Circle:
 def pygame_coords(x, y):
     return x, SCREEN_SIZE[1]-y
 
-def add_circ(event):
-    circs.append(Circle(SCREEN_SIZE[0]/2., SCREEN_SIZE[1]/2., 0, (random.random()*255, random.random()*255, random.random()*255)))
-    messenger.schedule(Event("circ"), 50.)
+cursor=[SCREEN_SIZE[0]/2, SCREEN_SIZE[1]/2]
 
+
+def add_circ(event):
+    circs.append(Circle(cursor[0], cursor[1], 0, (random.random()*255, random.random()*255, random.random()*255)))
+    messenger.schedule(Event("circ"), 50.)
 
 def main():
     window = pygame.display.set_mode(SCREEN_SIZE)
@@ -54,17 +56,37 @@ def main():
             if event.type==pygame.QUIT:
                 running = False
                 break
-            if event.type==pygame.KEYDOWN:
-                if event.key==pygame.K_SPACE:
-                    messenger.clear_events("shake")
-                    screen.shake(messenger, 1000, 70)
+
+        keys=pygame.key.get_pressed()
+        if keys[pygame.K_LSHIFT]:
+            vel=0.3
+        else:
+            vel=0.1
+        if keys[pygame.K_ESCAPE]:
+            running=False
+            break
+        if keys[pygame.K_SPACE]:
+            messenger.clear_events("shake")
+            screen.shake(messenger, 1000, 70)
+        if keys[pygame.K_a]:
+            if cursor[0]>=0:
+                cursor[0]-=vel*dt
+        if keys[pygame.K_d]:
+            if cursor[0]<=SCREEN_SIZE[0]:
+                cursor[0]+=vel*dt
+        if keys[pygame.K_w]:
+            if cursor[1]<=SCREEN_SIZE[1]:
+                cursor[1]+=vel*dt
+        if keys[pygame.K_s]:
+            if cursor[1]>=0:
+                cursor[1]-=vel*dt
 
         window.fill(THECOLORS['black'])
         screen.surf.fill(THECOLORS['white'])
         for circ in circs:
             circ.render(screen.surf)
             circ.radius+=0.1*dt
-        if len(circs)>100:
+        if len(circs)>130:
             circs.pop(0)
         screen.render(window)
         pygame.display.update()
